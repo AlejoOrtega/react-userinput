@@ -1,23 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import {useState, useEffect} from 'react'
 
 function App() {
+  const [input, setInput] = useState('')
+  const [search, setSearch] = useState({})
+
+  useEffect(()=>{
+    const searchUp = async() => {
+      if(input){
+        await fetch(`https://jsonplaceholder.typicode.com/users/${input}`)
+        .then(res => res.json())
+        .then(data => setSearch(data))
+      }
+    };
+
+    searchUp();
+  },[input])
+
+  const onChange = (e) => {
+    if(!isNaN(e.target.value)){
+      setInput(e.target.value)
+    }
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+       <input placeholder="Search only numbers..." value={input} onChange={onChange}/>
+       <div>
+          <h1>{search.name}</h1>
+          <h2>{search.username}</h2>
+          <p>{search.phone}</p>
+       </div>
     </div>
   );
 }
